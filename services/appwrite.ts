@@ -1,6 +1,4 @@
 import {Client, ID, Query, TablesDB, Account} from 'react-native-appwrite'
-import {User} from "@supabase/auth-js";
-import {Session} from "node:sqlite";
 
 
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!
@@ -72,12 +70,12 @@ export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> 
     }
 }
 
-export const isLoggedIn = async() : Promise<boolean> => {
-    try{
+export const isLoggedIn = async (): Promise<boolean> => {
+    try {
         await account.get()
         return true
     } catch (e: any) {
-        if (e.code === 401 ){
+        if (e.code === 401) {
             return false
         } else {
             console.error(e)
@@ -87,7 +85,7 @@ export const isLoggedIn = async() : Promise<boolean> => {
 }
 
 const getCurrentSession = async (): Promise<boolean> => {
-    try{
+    try {
         await account.getSession({
             sessionId: 'current'
         })
@@ -98,8 +96,8 @@ const getCurrentSession = async (): Promise<boolean> => {
     }
 }
 
-export const login = async(email: string, password: string) : Promise<void> => {
-    try{
+export const login = async (email: string, password: string): Promise<void> => {
+    try {
         const hasSession = await getCurrentSession()
         if (hasSession) {
             await account.deleteSession({
@@ -112,6 +110,21 @@ export const login = async(email: string, password: string) : Promise<void> => {
         })
     } catch (e: any) {
         console.error(e.message)
+        throw e
+    }
+}
+
+export const getCurrentUser = async (): Promise<User> => {
+    try {
+        const userFromDB = await account.get()
+
+        return {
+            $id: userFromDB.$id,
+            name: userFromDB.name,
+            email: userFromDB.email,
+        }
+    } catch (e) {
+        console.error(e)
         throw e
     }
 }

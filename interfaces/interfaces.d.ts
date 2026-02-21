@@ -79,3 +79,9 @@ interface TrendingCardProps {
   movie: TrendingMovie;
   index: number;
 }
+
+interface User{
+  $id: string;
+  name: string;
+  email: string;
+}
