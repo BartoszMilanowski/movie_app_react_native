@@ -1,5 +1,6 @@
 import {Client, ID, Query, TablesDB, Account} from 'react-native-appwrite'
 import {User} from "@supabase/auth-js";
+import {Session} from "node:sqlite";
 
 
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!
@@ -82,5 +83,35 @@ export const isLoggedIn = async() : Promise<boolean> => {
             console.error(e)
             return false
         }
+    }
+}
+
+const getCurrentSession = async (): Promise<boolean> => {
+    try{
+        await account.getSession({
+            sessionId: 'current'
+        })
+        return true
+
+    } catch {
+        return false
+    }
+}
+
+export const login = async(email: string, password: string) : Promise<void> => {
+    try{
+        const hasSession = await getCurrentSession()
+        if (hasSession) {
+            await account.deleteSession({
+                sessionId: 'current',
+            })
+        }
+        await account.createEmailPasswordSession({
+            email: email,
+            password: password,
+        })
+    } catch (e: any) {
+        console.error(e.message)
+        throw e
     }
 }
