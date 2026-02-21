@@ -1,4 +1,5 @@
-import {Client, Databases, ID, Query, TablesDB} from 'react-native-appwrite'
+import {Client, ID, Query, TablesDB, Account} from 'react-native-appwrite'
+import {User} from "@supabase/auth-js";
 
 
 const DATABASE_ID = process.env.EXPO_PUBLIC_APPWRITE_DATABASE_ID!
@@ -10,7 +11,9 @@ const client = new Client()
 
 const tableDB = new TablesDB(client)
 
-export const updateSearchCount = async ( movie: MovieToTrending) => {
+const account = new Account(client)
+
+export const updateSearchCount = async (movie: MovieToTrending) => {
     try {
         const result = await tableDB.listRows({
             databaseId: DATABASE_ID,
@@ -65,5 +68,19 @@ export const getTrendingMovies = async (): Promise<TrendingMovie[] | undefined> 
     } catch (e) {
         console.error(e)
         return undefined
+    }
+}
+
+export const isLoggedIn = async() : Promise<boolean> => {
+    try{
+        await account.get()
+        return true
+    } catch (e: any) {
+        if (e.code === 401 ){
+            return false
+        } else {
+            console.error(e)
+            return false
+        }
     }
 }

@@ -6,7 +6,6 @@ import {fetchMovies} from "@/services/api";
 import MovieCard from "@/components/MovieCard";
 import {icons} from "@/constants/icons";
 import SearchBar from "@/components/SearchBar";
-import {updateSearchCount} from "@/services/appwrite";
 import {useFocusEffect} from "@react-navigation/native";
 
 

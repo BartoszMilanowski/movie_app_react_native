@@ -5,7 +5,6 @@ import {fetchMovieDetails} from "@/services/api";
 import useFetch from "@/services/useFetch";
 import {icons} from "@/constants/icons";
 import {updateSearchCount} from "@/services/appwrite";
-import {data} from "browserslist";
 
 interface MovieInfoProps {
     label: string;
