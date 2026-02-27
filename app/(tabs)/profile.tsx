@@ -1,9 +1,9 @@
-import {View, Text, Image, ActivityIndicator} from 'react-native'
+import {View, Text, Image, ActivityIndicator, TouchableOpacity} from 'react-native'
 import React, {useEffect, useState} from "react";
-import {getCurrentUser, isLoggedIn} from "@/services/appwrite";
-import {Redirect} from "expo-router";
-import {images} from "@/constants/images";
-import {icons} from "@/constants/icons";
+import {getCurrentUser, isLoggedIn, logout} from "@/services/appwrite";
+import {Redirect, router} from "expo-router";
+import PageHeader from "@/components/PageHeader";
+import Toast from "react-native-toast-message";
 
 const Profile = () => {
 
@@ -24,24 +24,67 @@ const Profile = () => {
         loadUser()
     }, []);
 
-    if (isLogged === null) return (
-        <ActivityIndicator size='large' color='#000ff' className='mt-10 self-center'/>
-    )
+    const handleLogout = async () => {
+        try {
+            await logout()
+            router.replace('/')
+            setIsLogged(false)
 
-    if (!isLogged) return (
-            <Redirect href="/login"/>
-    )
+            Toast.show({
+                type: 'success',
+                position: 'bottom',
+                text1: 'Logout',
+                visibilityTime: 3000,
+                bottomOffset: 100
+            })
+        } catch (e) {
+            console.error(e)
+            throw e
+        }
+    }
+
+    // if (isLogged === null) return (
+    //     <View className='bg-primary flex-1 justify-center items-center'>
+    //         <ActivityIndicator size='large' color='#000ff' className='mt-10 self-center'/>
+    //     </View>
+    // )
+
+    // if (!isLogged) return (
+    //     <Redirect href="/login"/>
+    // )
 
 
     return (
         <View className='bg-primary flex-1'>
-            <Image source={images.bg} className='absolute w-full z-0'/>
-            <Image source={icons.logo} className='w-12 h-10 mt-20 mb-5 mx-auto'/>
-            <View className='items-center w-full min-h-16 mt-10'>
-                <Text className='text-white text-xl mb-1'>{user?.name}</Text>
-                <Text className='text-gray-300 mb-2'>{user?.email}</Text>
-                <Text className='text-gray-400 text-sm'>ID: {user?.$id}</Text>
-            </View>
+
+            {isLogged === null ? (
+                <ActivityIndicator size='large' color='#000ff' className='mt-10 self-center'/>
+            ) : !isLogged ? (
+                <Redirect href='/login'/>
+            ) : (
+                <>
+                    <PageHeader/>
+                    <View className='items-center w-full min-h-16 mt-10'>
+                        <Text className='text-white text-6xl mb-5'> Hi {user?.name}</Text>
+                        <Text className='text-gray-300 text-lg mb-2'>{user?.email}</Text>
+                    </View>
+                    <View className='flex-row ml-5 mt-10 gap-x-3'>
+                        <TouchableOpacity
+                            className='bg-accent rounded-lg p-3'
+                        >
+                            <Text className='text-white'>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => handleLogout()}
+                            className='bg-red-400 rounded-lg p-3'
+                        >
+                            <Text className='text-white'>Log out</Text>
+                        </TouchableOpacity>
+                    </View>
+                </>
+            )
+
+            }
 
 
         </View>

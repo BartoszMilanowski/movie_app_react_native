@@ -75,12 +75,7 @@ export const isLoggedIn = async (): Promise<boolean> => {
         await account.get()
         return true
     } catch (e: any) {
-        if (e.code === 401) {
-            return false
-        } else {
-            console.error(e)
-            return false
-        }
+       throw e
     }
 }
 
@@ -117,13 +112,26 @@ export const login = async (email: string, password: string): Promise<void> => {
 export const getCurrentUser = async (): Promise<User> => {
     try {
         const userFromDB = await account.get()
-
         return {
             $id: userFromDB.$id,
             name: userFromDB.name,
             email: userFromDB.email,
         }
     } catch (e) {
+        console.error(e)
+        throw e
+    }
+}
+
+export const logout = async (): Promise<void> => {
+    try {
+        const session = await getCurrentSession()
+        if (session) {
+            await account.deleteSession({
+                sessionId: 'current'
+            })
+        }
+    } catch (e: any) {
         console.error(e)
         throw e
     }

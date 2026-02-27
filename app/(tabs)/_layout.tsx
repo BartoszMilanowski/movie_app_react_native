@@ -1,9 +1,11 @@
 import {Text, View} from 'react-native'
 import {Tabs} from 'expo-router'
-import React from "react";
+import React, {useEffect} from "react";
 import {images} from "@/constants/images";
 import {ImageBackground, Image} from "react-native";
 import {icons} from "@/constants/icons";
+import Toast from "react-native-toast-message";;
+
 
 const TabIcon = ({focused, icon, title}: any) => {
 
@@ -29,6 +31,9 @@ const TabIcon = ({focused, icon, title}: any) => {
 
 
 const _Layout = () => {
+
+
+
     return (
         <View className='flex-1 bg-primary'>
             <Tabs
@@ -85,7 +90,15 @@ const _Layout = () => {
                             </>
                         )
                     }}/>
+                <Tabs.Screen
+                    name='login'
+                    options={{
+                        href: null,
+                        tabBarIcon: () => null
+                    }}
+                    />
             </Tabs>
+            <Toast/>
         </View>
     )
 }

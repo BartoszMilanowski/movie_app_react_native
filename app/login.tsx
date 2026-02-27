@@ -4,6 +4,7 @@ import {icons} from "@/constants/icons";
 import React, {useState} from "react";
 import {router} from "expo-router";
 import {login} from "@/services/appwrite";
+import PageHeader from "@/components/PageHeader";
 
 
 const Login = () => {
@@ -37,8 +38,7 @@ const Login = () => {
 
     return (
         <View className='bg-primary flex-1'>
-            <Image source={images.bg} className='absolute w-full z-0'/>
-            <Image source={icons.logo} className='w-12 h-10 mt-20 mb-5 mx-auto'/>
+           <PageHeader />
             <View className='items-center w-full min-h-16 mt-10'>
                 <Text className='text-white text-5xl'>
                     Log In
